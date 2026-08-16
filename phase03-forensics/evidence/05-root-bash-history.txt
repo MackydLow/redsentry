@@ -1,0 +1,21 @@
+COMMAND: cat /root/.bash_history
+RESULT: No output.
+
+INVESTIGATION:
+$ ls -la /root/.bash_history
+lrwxrwxrwx 1 root root 9 May 14 2012 /root/.bash_history -> /dev/null
+
+FINDING:
+/root/.bash_history is a symlink to /dev/null, dated May 14 2012 — part of the
+original Metasploitable image build, not the result of attacker activity during
+this session. Any commands executed as root on this system are never written
+to a history file.
+
+FORENSIC IMPLICATION:
+Bash history is not a viable evidence source for the root account on this
+system. This is a platform-level characteristic of the Metasploitable image,
+confirmed by the file's creation date predating this engagement by over a
+decade. Investigators must rely on alternative artifacts (auth.log, process
+state, network connections, filesystem timestamps) to reconstruct activity
+attributable to root.
+

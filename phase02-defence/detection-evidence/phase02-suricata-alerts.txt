@@ -1,0 +1,45 @@
+07/19/2026-15:01:29.000107  [**] [1:9000001:1] REDSENTRY vsftpd 2.3.4 Backdoor Trigger - Smiley Username [**] [Classification: A Network Trojan was detected] [Priority: 1] {TCP} 192.168.128.7:44445 -> 192.168.128.8:21
+07/19/2026-15:01:40.475567  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:153
+07/19/2026-15:01:40.476522  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:99
+07/19/2026-15:01:40.475584  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:50
+07/19/2026-15:01:40.478538  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:115
+07/19/2026-15:01:40.481627  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:158
+07/19/2026-15:01:40.476431  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:4
+07/19/2026-15:01:40.478372  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:57
+07/19/2026-15:01:40.480427  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:71
+07/19/2026-15:01:40.481611  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:35
+07/19/2026-15:01:40.481629  [**] [1:9000005:1] REDSENTRY Nmap SYN Scan Detected [**] [Classification: Attempted Information Leak] [Priority: 2] {TCP} 192.168.128.7:54739 -> 192.168.128.8:150
+
+=== Rule Testing Summary ===
+
+Confirmed firing via live attack replay:
+- Rule 9000001 (vsftpd backdoor trigger) — confirmed
+- Rule 9000002 (vsftpd backdoor shell) — confirmed
+- Rule 9000004 (UnrealIRCd backdoor) — confirmed
+- Rule 9000005 (Nmap SYN scan) — confirmed
+
+Rule 9000006 (SSH Brute Force) — untested, documented limitation:
+
+Attempted to trigger this rule via repeated failed SSH login attempts
+against Metasploitable's OpenSSH server. The connection failed at the
+SSH key-exchange/negotiation stage before authentication was ever
+attempted:
+
+  "Unable to negotiate with 192.168.128.8 port 22: no matching host key
+  type found. Their offer: ssh-rsa,ssh-dss"
+
+Modern OpenSSH clients (as shipped in current Kali) have deprecated and,
+in some cases, entirely removed support for legacy host key types
+(ssh-dss) and key-exchange algorithms that Metasploitable's ~2012-era
+SSH server requires — attempts to explicitly re-enable these via
+HostKeyAlgorithms/KexAlgorithms client options were rejected outright
+by the SSH client itself ("Bad key types"), rather than negotiating
+successfully.
+
+This means the connection never reaches the authentication stage,
+so no auth-failure events are generated for Suricata to detect,
+regardless of how many connection attempts are made.
+
+Rule syntax was validated and loaded successfully by Suricata (see
+Phase 02 config validation); only live-fire testing against this
+specific target was not achievable.

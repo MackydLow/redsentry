@@ -1,0 +1,22 @@
+# Never commit these
+*.key
+*.pem
+.env
+api_key.txt
+ANTHROPIC_API_KEY*
+
+# Sensitive evidence files collected during this engagement
+**/11-shadow.txt
+**/10-passwd.txt
+**/*shadow*.txt
+
+# Compiled malware binaries (never commit executables, even benign ones)
+phase04-malware/source/redsentry-stub
+phase04-malware/source/redsentry-stub-*
+phase04-malware/source/*.out
+
+# Synthetic disk image used for Autopsy analysis
+*.img
+
+# Raw/oversized log files
+*.log

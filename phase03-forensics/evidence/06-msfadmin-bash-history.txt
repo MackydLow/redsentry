@@ -1,0 +1,17 @@
+COMMAND: cat /home/msfadmin/.bash_history
+RESULT: No output.
+
+INVESTIGATION:
+$ ls -la /home/msfadmin/.bash_history
+lrwxrwxrwx 1 root root 9 May 14 2012 /home/msfadmin/.bash_history -> /dev/null
+
+FINDING:
+Same pattern as the root account — /home/msfadmin/.bash_history is also a
+symlink to /dev/null, dated identically (May 14 2012). This confirms the
+history-suppression is a system-wide configuration in the Metasploitable
+image, not isolated to a single account.
+
+FORENSIC IMPLICATION:
+Command-line history is not retained for any user account on this system.
+Consistent with the root account finding, this rules out bash history as
+a usable evidence source across the board for this investigation.

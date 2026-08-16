@@ -1,0 +1,50 @@
+=== Phase 03.3 — Memory Forensics Notes ===
+
+--- Limitations & Approach ---
+A live memory dump of the Metasploitable VM was attempted but not obtainable
+in this environment. UTM (running QEMU on Apple Silicon) exposes its QEMU
+monitor exclusively via a Spice virtual channel
+(-chardev spiceport,name=org.qemu.monitor.qmp), rather than a plain TCP or
+Unix socket. This was confirmed by inspecting the live QEMU process arguments
+(ps aux | grep qemu) — no telnet or unix-socket monitor interface is exposed,
+which the standard "connect via nc" memory-dump technique depends on.
+
+As a substitute, string analysis was performed on already-collected evidence
+files (10-passwd.txt, 11-shadow.txt, 04-auth-log.txt) to demonstrate the
+analytical technique memory forensics tools like Volatility rely on —
+extracting readable strings from raw data and filtering for keywords of
+interest.
+
+Full Volatility 3 analysis (linux.pslist, linux.netstat, linux.bash) was not
+performed, since no genuine memory image was available.
+
+--- Volatility 3 Plugin Reference (for future work) ---
+- linux.pslist — shows all running processes at time of memory capture;
+  comparing this against live `ps aux` output can reveal hidden processes
+  (a hallmark of rootkit/process-hiding malware)
+- linux.netstat — shows network connections captured in memory, which can
+  reveal command-and-control (C2) traffic even if connections have since closed
+- linux.bash — recovers bash command history directly from memory, which
+  can recover commands even if .bash_history was cleared or redirected
+  (as was found to be the case on this system — see 05/06-bash-history.txt)
+
+--- Findings from string analysis of collected evidence ---
+
+Password hash review:
+Both root and msfadmin accounts use $1$ (MD5-crypt) password hashes — a
+cryptographically weak, legacy hashing scheme by modern standards, vulnerable
+to offline brute-force/dictionary attacks with tools such as hashcat or John
+the Ripper.
+
+Login activity:
+Two failed-then-successful login sequences for user msfadmin were identified
+on Jul 19:
+  09:56:44-09:56:51 - 1 failed attempt, followed by successful login
+  10:00:29-10:00:37 - 1 failed attempt, followed by successful login
+Shortly after the first sequence, msfadmin executed a privileged reboot
+command via sudo (09:59:27, COMMAND=/sbin/reboot). This pattern - repeated
+failed logins followed by immediate privileged command execution - is
+consistent with either credential brute-forcing or password guessing by an
+unauthorized user, though it cannot be definitively distinguished from
+legitimate user error without additional corroborating evidence (e.g. source
+IP, which auth.log here does not capture for local tty logins).

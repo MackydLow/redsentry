@@ -1,0 +1,43 @@
+=== Phase 03.2 — Autopsy Disk Forensics Analysis ===
+Case: RedSentry-Incident-001
+Examiner: Mack Low
+Evidence: evidence.img (MD5: 80BE5924742E412B8AD6A13DEBC192AB)
+
+--- Keyword Search: REDSENTRY / backdoor ---
+Search terms "REDSENTRY" and "backdoor" returned 0 hits across the
+evidence image. This is expected — these terms are specific to the
+Suricata IDS rule naming and post-incident analysis commentary, not
+artifacts present on the compromised host itself. The victim machine's
+own logs, process list, and configuration contain no self-referential
+indicators of the specific rule names used to detect the attack;
+identification of the compromise relies on network-layer detection
+(Suricata) correlated with host-level evidence (open ports, running
+services, auth logs) rather than string-matching for detection tool
+names.
+
+--- Keyword Search: vsftpd ---
+1 ASCII hit found (0 Unicode), located at fragment offset 8707,
+referencing "sbin/vsftpd" — consistent with the vsftpd service binary
+path found in /etc/passwd, confirming the vulnerable FTP service was
+present on the compromised host. This corroborates the Suricata
+network-layer detection (rules 9000001, 9000002) with host-level
+evidence of the exploited service.
+
+--- Keyword Search: unrealircd ---
+4 ASCII hits found (0 Unicode):
+  - 2 hits referencing the binary path (/bin/unrealircd)
+  - 2 hits referencing PID 4749 associated with unrealircd — confirming
+    the service was actively running as a live process at time of
+    evidence capture
+
+This directly corroborates the successful exploitation of
+exploit/unix/irc/unreal_ircd_3281_backdoor (Suricata rule 9000004) —
+the running unrealircd process (PID 4749) is the exact service targeted
+during Phase 02 attack replay, providing host-level confirmation of the
+network-layer detection.
+
+--- Conclusion ---
+Host-level forensic evidence (Autopsy keyword search) corroborates
+network-layer detection (Suricata custom rules 9000001, 9000002, 9000004)
+for both the vsftpd and UnrealIRCd exploitation attempts, confirming
+successful compromise via two independent evidence sources.
