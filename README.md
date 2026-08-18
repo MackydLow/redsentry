@@ -101,6 +101,7 @@ was caught.
 ![API connection test](docs/screenshots/05-api-connection-test.png)
 ![Report generator running](docs/screenshots/05-report-generated.png)
 ![Report excerpt](docs/screenshots/05-report-excerpt2.png)
+![Report excerpt continued](docs/screenshots/05-report-excerpt3.png)
 
 ## Limitations & Lessons (the part that actually shows the work)
 
