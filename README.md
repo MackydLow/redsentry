@@ -70,23 +70,37 @@ was caught.
 
 ## Screenshots
 
-### Attack + Live Detection Side by Side
-![Detection in action](docs/screenshots/02-suricata-detecting-attack.png)
+### Reconnaissance & Exploitation
+![Nmap full scan](docs/screenshots/01-nmap-full-scan.png)
+![SMB enumeration](docs/screenshots/01-smb-enumeration.png)
+![Nikto results](docs/screenshots/01-nikto-results.png)
+![vsftpd root shell](docs/screenshots/01-exploit-vsftpd-root.png)
+![UnrealIRCd backdoor shell](docs/screenshots/01-exploit-irc-backdoor.png)
+![Post-exploitation evidence](docs/screenshots/01-post-exploit-shadow.png)
+![All exploits successful](docs/screenshots/01-all-exploits-successful.png)
+![DVWA command injection](docs/screenshots/01-dvwa-command-injection.png)
 
-### Alerts Flowing into Kibana
-![Kibana](docs/screenshots/02-suricata-in-kibana.png)
+### Network Defence
+![Suricata rules loaded](docs/screenshots/02-suricata-rules-loaded.png)
+![Attack and detection side by side](docs/screenshots/02-suricata-detecting-attack.png)
+![Alerts in Kibana](docs/screenshots/02-suricata-in-kibana.png)
 
-### Ghidra Static Analysis
-![Ghidra](docs/screenshots/04-ghidra-main-decompiled.png)
+### Digital Forensics
+![Autopsy case open](docs/screenshots/03-autopsy-case-open.png)
+![Autopsy keyword analysis](docs/screenshots/03-autopsy-keyword-analysis.png)
+![Forensic timeline](docs/screenshots/03-forensic-timeline-1.png)
 
-### Confirmed Dynamic Execution + Beacon Capture
-![Strace and beacon](docs/screenshots/04-strace-and-beacon-received.png)
+### Malware Analysis
+![Malware sample compiled](docs/screenshots/04-malware-sample-compiled.png)
+![Ghidra decompiled main](docs/screenshots/04-ghidra-main-decompiled.png)
+![Ghidra connect trace](docs/screenshots/04-ghidra-connect-trace.png)
+![Ghidra strings view](docs/screenshots/04-ghidra-strings-view.png)
+![Confirmed dynamic execution and beacon capture](docs/screenshots/04-dynamic-analysis-strace-and-beacon.png)
 
-### AI Report Generator Running
-![AI Reporting](docs/screenshots/05-report-generator-running.png)
-
-### Final Reviewed Report (Excerpt)
-![Report](docs/screenshots/05-report-excerpt.png)
+### AI-Assisted Reporting
+![API connection test](docs/screenshots/05-api-connection-test.png)
+![Report generator running](docs/screenshots/05-report-generated.png)
+![Report excerpt](docs/screenshots/05-report-excerpt2.png)
 
 ## Limitations & Lessons (the part that actually shows the work)
 
@@ -98,6 +112,7 @@ gap of over a decade causing a missing-symbol failure, and finally a kernel ABI 
 SIGSEGV even with static linking. The sample was ultimately compiled natively on the target using
 its own toolchain, which resolved every compatibility layer at once. This is documented in full in
 `phase04-malware/dynamic-analysis/`.
+![Ghidra confirming the IP was findable despite hex-encoding](docs/screenshots/04-ghidra-strings-ip-found.png)
 
 **A genuine IDS detection gap.** Suricata rule 9000008 (command injection detection) was written
 using the `http.uri` sticky buffer. Live testing confirmed the underlying command injection
@@ -105,6 +120,7 @@ vulnerability was fully exploitable, but the rule never fired — root-cause ana
 vulnerable endpoint only accepts the payload via HTTP POST body, which a URI-scoped rule cannot
 observe. This is a realistic, well-known class of IDS blind spot, not a rule-syntax bug, and is
 documented with the diagnostic steps used to confirm it in `phase02-defence/`.
+![Second page of the forensic timeline](docs/screenshots/03-forensic-timeline-2.png)
 
 **Volatility 3 was not usable in this environment.** UTM on Apple Silicon exposes QEMU's monitor
 interface exclusively via a Spice virtual channel rather than a TCP or Unix socket, which the

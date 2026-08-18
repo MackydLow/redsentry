@@ -31,3 +31,11 @@ The most important design decisions in the report generator:
    manual review against the underlying evidence.
 
 Cost for this project: approximately £1-3 total in API credits across all generation runs.
+
+
+## Supporting Screenshots
+
+See `docs/screenshots/05-api-connection-test.png`, `05-report-generated.png`,
+`05-report-excerpt2.png`, and `05-report-excerpt3.png` for the generator running
+and sample output at various stages of the review-and-correction process
+described above.
